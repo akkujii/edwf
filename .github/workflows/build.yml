@@ -10,7 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write 
+
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Run a multi-line script
         run: |
           echo Linting Code...
@@ -21,3 +28,11 @@ jobs:
           echo Artifact Built
           echo Uploading Artifact...
           echo Artifact Uploaded!
+
+      - name: Create and push tag
+        run: |
+          EPOCH_TIME=$(date +%s)
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -a "$EPOCH_TIME" -m "Automated tag created at epoch $EPOCH_TIME"
+          git push origin "$EPOCH_TIME"

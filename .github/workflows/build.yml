@@ -13,6 +13,9 @@ jobs:
     permissions:
       contents: write 
 
+    outputs:
+      git_tag: ${{ steps.create_tag.outputs.tag }}
+
     steps:
 
       - name: Checkout code
@@ -30,9 +33,11 @@ jobs:
           echo Artifact Uploaded!
 
       - name: Create and push tag
+        id: create_tag
         run: |
           EPOCH_TIME=$(date +%s)
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git tag -a "$EPOCH_TIME" -m "Automated tag created at epoch $EPOCH_TIME"
           git push origin "$EPOCH_TIME"
+          echo "tag=$EPOCH_TIME" >> "$GITHUB_OUTPUT"

@@ -1,0 +1,15 @@
+name: Mainline Workflow
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Output trigger
+        run: echo Workflow triggered by $GITHUB_REF

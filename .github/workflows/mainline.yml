@@ -2,14 +2,63 @@ name: Mainline Workflow
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [ "main" ]
+
+  workflow_dispatch:
 
 jobs:
-  dev:
+  build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      tag: ${{ steps.create_tag.outputs}}
 
     steps:
 
-      - name: Output trigger
-        run: echo Workflow triggered by $GITHUB_REF
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run a multi-line script
+        run: |
+          echo Linting Code...
+          echo Code linted
+          echo Executing Unit Tests...
+          echo Unit Tests Executed
+          echo Building Artifact...
+          echo Artifact Built
+          echo Uploading Artifact...
+          echo Artifact Uploaded!
+
+      - name: Create and push tag
+        id: create_tag
+        run: |
+          EPOCH_TIME=$(date +%s)
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag -a "$EPOCH_TIME" -m "Automated tag created at epoch $EPOCH_TIME"
+          git push origin "$EPOCH_TIME"
+          echo "tag=$EPOCH_TIME" >> "$GITHUB_OUTPUT"
+          echo "Creating tag $tag"
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build
+    steps:
+      - name: Deploying to dev
+        run: |
+          Deploying tag ${{ needs.build.outputs.tag }}
+          Deployed!
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    environment: test
+    needs: deploy-dev
+    steps:
+      - name: Deploying to tests
+        run: |
+          Deploying tag ${{ needs.build.outputs.tag }}
+          Deployed!

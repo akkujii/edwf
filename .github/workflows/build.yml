@@ -6,6 +6,12 @@ on:
 
   workflow_dispatch:
 
+  workflow_call:
+    outputs:
+      git_tag:
+        description: 'tag name'
+        value: ${{ jobs.build.outputs.git_tag }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -1,15 +1,18 @@
-name: Mainline Workflow
+name: Mainline workflow
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_run:
+    workflows: [ Build ]
+    types: [completed]
+
+permissions: read-all
 
 jobs:
-  dev:
+  process_output:
     runs-on: ubuntu-latest
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
-
-      - name: Output trigger
-        run: echo Workflow triggered by $GITHUB_REF
+      - name: Get workflow output
+        run: |
+          echo "The tag created in the Build workflow is: ${{ toJson(github.event.workflow_run.output) }}"

@@ -38,3 +38,4 @@ jobs:
           git tag -a "$EPOCH_TIME" -m "Automated tag created at epoch $EPOCH_TIME"
           git push origin "$EPOCH_TIME"
           echo "tag=$EPOCH_TIME" >> "$GITHUB_OUTPUT"
+          echo "Creating tag $tag"

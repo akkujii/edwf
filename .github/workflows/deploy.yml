@@ -19,7 +19,9 @@ jobs:
         with:
           ref: ${{ inputs.tag }}
       - name: Output foofile
-        run: cat foofile.txt
+        run: | 
+          cat foofile.txt
+          cat foofile.txt >> $GITHUB_STEP_SUMMARY
       - name: Output commit SHA
         run: echo Commit SHA $GITHUB_SHA
       - name: Deploy to ${{ inputs.environment }} environment

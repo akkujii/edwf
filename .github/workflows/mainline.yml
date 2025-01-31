@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write 
+      contents: write
+
+    outputs:
+      tag: ${{ steps.create_tag.outputs}}
 
     steps:
 
@@ -39,3 +42,23 @@ jobs:
           git push origin "$EPOCH_TIME"
           echo "tag=$EPOCH_TIME" >> "$GITHUB_OUTPUT"
           echo "Creating tag $tag"
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build
+    steps:
+      - name: Deploying to dev
+        run: |
+          Deploying tag ${{ needs.build.outputs.tag }}
+          Deployed!
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    environment: test
+    needs: deploy-dev
+    steps:
+      - name: Deploying to tests
+        run: |
+          Deploying tag ${{ needs.build.outputs.tag }}
+          Deployed!

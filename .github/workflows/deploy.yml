@@ -23,7 +23,10 @@ jobs:
           cat foofile.txt
           cat foofile.txt >> $GITHUB_STEP_SUMMARY
       - name: Output commit SHA
-        run: echo Commit SHA $GITHUB_SHA
+        run: |
+          echo Commit SHA $GITHUB_SHA
+          echo ref $GITHUB_REF
+          echo ref name $GITHUB_REF_NAME
       - name: Deploy to ${{ inputs.environment }} environment
         run: |
           echo Deploying version ${{ inputs.tag }} to ${{ inputs.environment }}

@@ -1,18 +1,40 @@
-name: Mainline workflow
+name: Mainline Workflow
 
 on:
-  workflow_run:
-    workflows: [ Build ]
-    types: [completed]
+  push:
+    branches: [ "main" ]
 
-permissions: read-all
+  workflow_dispatch:
 
 jobs:
-  process_output:
+  build:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
+
+    permissions:
+      contents: write 
+
     steps:
-      - name: Get workflow output
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run a multi-line script
         run: |
-          echo "The tag created in the Build workflow is: ${{ toJson(github.event) }}"
+          echo Linting Code...
+          echo Code linted
+          echo Executing Unit Tests...
+          echo Unit Tests Executed
+          echo Building Artifact...
+          echo Artifact Built
+          echo Uploading Artifact...
+          echo Artifact Uploaded!
+
+      - name: Create and push tag
+        id: create_tag
+        run: |
+          EPOCH_TIME=$(date +%s)
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag -a "$EPOCH_TIME" -m "Automated tag created at epoch $EPOCH_TIME"
+          git push origin "$EPOCH_TIME"
+          echo "tag=$EPOCH_TIME" >> "$GITHUB_OUTPUT"

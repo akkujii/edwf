@@ -20,6 +20,8 @@ jobs:
           ref: ${{ inputs.tag }}
       - name: Output foofile
         run: cat foofile.txt
+      - name: Output commit SHA
+        run: echo Commit SHA $GITHUB_SHA
       - name: Deploy to ${{ inputs.environment }} environment
         run: |
           echo Deploying version ${{ inputs.tag }} to ${{ inputs.environment }}
